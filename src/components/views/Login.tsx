@@ -6,6 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+//import Register from "./Register";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -28,6 +29,27 @@ const FormField = (props) => {
 };
 
 FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
+
+const FormFieldPassword = (props) => {
+  return (
+      <div className="login field">
+        <label className="login label">{props.label}</label>
+        <input
+            type = "password"
+            className="login input"
+            placeholder="enter here.."
+            value={props.value}
+            onChange={(e) => props.onChange(e.target.value)}
+        />
+      </div>
+  );
+};
+
+FormFieldPassword.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
@@ -67,18 +89,24 @@ const Login = () => {
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
-          <FormField
-            label="Name"
+          <FormFieldPassword
+            label="Password"
             value={name}
             onChange={(n) => setName(n)}
           />
-          <div className="login button-container">
+          <div className="login button-container" style={{display: 'flex', gap: '20px' }}>
             <Button
               disabled={!username || !name}
-              width="100%"
+              width="50%"
               onClick={() => doLogin()}
             >
               Login
+            </Button>
+            <Button
+                width="50%"
+                onClick={() => navigate("/register")}
+            >
+              Create New Account
             </Button>
           </div>
         </div>

@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
-import { Button } from "components/ui/Button";
+import React, {useEffect, useState} from "react";
+import {api, handleError} from "helpers/api";
+import {Spinner} from "components/ui/Spinner";
+import {Button} from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
-import { User } from "types";
+import {User} from "types";
 
-const Player = ({ user }: { user: User }) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
+const Player = ({user}: { user: User }) => (
+    <div className="player container" style={{display: 'flex', gap: '20px' }}>
+      <div className="player username">{user.username}</div>
+      <div className="player status">{user.status}</div>
+      <div className="player id">id: {user.id}</div>
+    </div>
 );
+
+
+//     <div className="player name">{user.name}</div>
+//     <div className="player id">id: {user.id}</div>
 
 Player.propTypes = {
   user: PropTypes.object,
@@ -65,13 +69,13 @@ const Game = () => {
         console.log(response);
       } catch (error) {
         console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
+            `Something went wrong while fetching the users: \n${handleError(
+                error
+            )}`
         );
         console.error("Details:", error);
         alert(
-          "Something went wrong while fetching the users! See the console for details."
+            "Something went wrong while fetching the users! See the console for details."
         );
       }
     }
@@ -79,33 +83,33 @@ const Game = () => {
     fetchData();
   }, []);
 
-  let content = <Spinner />;
+  let content = <Spinner/>;
 
   if (users) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
-              <Player user={user} />
-            </li>
-          ))}
-        </ul>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
-      </div>
+        <div className="game">
+          <ul className="game user-list">
+            {users.map((user: User) => (
+                <li key={user.id}>
+                  <Player user={user}/>
+                </li>
+            ))}
+          </ul>
+          <Button width="100%" onClick={() => logout()}>
+            Logout
+          </Button>
+        </div>
     );
   }
 
   return (
-    <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">
-        Get all users from secure endpoint:
-      </p>
-      {content}
-    </BaseContainer>
+      <BaseContainer className="game container">
+        <h2>Happy Coding!</h2>
+        <p className="game paragraph">
+          Get all users from secure endpoint:
+        </p>
+        {content}
+      </BaseContainer>
   );
 };
 

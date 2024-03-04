@@ -35,9 +35,41 @@ const Game = () => {
   // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState 
   const [users, setUsers] = useState<User[]>(null);
 
-  const logout = (): void => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const logout = async () => {
+      /*/
+      const id = localStorage.getItem("id")
+      const response = api.get("/users/{id}");
+      const requestBody = JSON.stringify(response.data());
+      const logoutchange = api.put("/users/{id}");
+
+      // delays continuous execution of an async operation for 1 second.
+      // This is just a fake async call, so that the spinner can be displayed
+      // feel free to remove it :)
+      response.data()
+      /*/
+      try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+              navigate("/login");
+              return;
+          }
+          const id = localStorage.getItem("id");
+          // Assuming you are making a POST request to /userslogout/${id}
+          const response = await api.post(`/userslogout/${id}`, {headers: { Authorization: `Bearer ${token}` }});
+
+          // Check if the logout was successful based on the response status
+          if (response.status === 200) {
+              localStorage.removeItem("token");
+              console.log("YEEESSSSSSSS");
+              navigate("/login");
+          } else {
+              console.error("Logout failed:", response);
+              console.log("ELLLLSEEEEE");
+          }
+      } catch (error) {
+          navigate("/login")
+          console.error("Error during logout:", error);
+      }
   };
 
   // the effect hook can be used to react to change in your component.
@@ -47,8 +79,18 @@ const Game = () => {
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
+        //localStorage.removeItem("token");
+
+
       try {
-        const response = await api.get("/users");
+        const token = localStorage.getItem("token");
+
+
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        const response = await api.get("/users", {headers: {Authorization: `Bearer ${token}`}});
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -57,6 +99,7 @@ const Game = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
+
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -86,31 +129,33 @@ const Game = () => {
   let content = <Spinner/>;
 
   if (users) {
-    content = (
-        <div className="game">
-          <ul className="game user-list">
-            {users.map((user: User) => (
-                <li key={user.id}>
-                  <Player user={user}/>
-                </li>
-            ))}
-          </ul>
-          <Button width="100%" onClick={() => logout()}>
-            Logout
-          </Button>
-        </div>
-    );
+      content = (
+          <div className="game">
+              <ul className="game user-list">
+                  {users.map((user: User) => (
+                      <li key={user.id} onClick={() => navigate("/profile/"+ user.id)}>
+                          <Player user={user}/>
+                      </li>
+                  ))}
+              </ul>
+              <Button width="100%" onClick={() => logout()}>
+                  Logout
+              </Button>
+          </div>
+      );
+
   }
 
-  return (
-      <BaseContainer className="game container">
-        <h2>Happy Coding!</h2>
-        <p className="game paragraph">
-          Get all users from secure endpoint:
-        </p>
-        {content}
-      </BaseContainer>
-  );
+    return (
+        <BaseContainer className="game container">
+            <h2>Happy Coding!</h2>
+            <p className="game paragraph">
+                Get all users from secure endpoint:
+            </p>
+            {content}
+        </BaseContainer>
+    );
 };
 
 export default Game;
+

@@ -6,8 +6,6 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import {compileString} from "sass";
-//import Register from "./Register";
 
 const FormField = (props) => {
     return (
@@ -26,7 +24,6 @@ FormField.propTypes = {
     onChange: PropTypes.func,
 };
 
-
 const Profile = () => {
     const [users, setUsers] = useState<User[]>(null);
     const [name, setName] = useState<string>(null);
@@ -37,16 +34,14 @@ const Profile = () => {
     const [entrydate, setEntrydate] = useState<string>("6.4.2002")
     const [id, setId] = useState<number>(1)
     const navigate = useNavigate();
-    let { userId } = useParams(); // Move useParams hook here
-    let [editMode,setEditMode] = useState(false);
+    let { linkid } = useParams(); // Move useParams hook here
 
     useEffect(() => {
-        const fetchDataProfile = async () => {
+        const fetchDataprofile = async () => {
             try {
-                console.log("CURRENT ID: ", userId);
+                console.log("CURRENT ID: ", linkid);
                 const token = localStorage.getItem("token");
-
-                const response = await api.get(`/users/${userId}`, {headers: { Authorization: `Bearer ${token}` }});
+                const response = await api.get(`/users/${linkid}`, {headers: { Authorization: `Bearer ${token}` }});
                 const user = new User(response.data);
                 console.log("THIS IS THE RETURNED DATA: ", user);
                 setUsername(user.username);
@@ -56,8 +51,7 @@ const Profile = () => {
                 //setEntrydate(user.get(entrydate));
                 setId(user.id);
 
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(
                     `Something went wrong while fetching the users: \n${handleError(
                         error
@@ -69,8 +63,10 @@ const Profile = () => {
             }
         };
 
-        fetchDataProfile();
+        fetchDataprofile();
     }, []); // Add id as a dependency to useEffect
+
+    // ... (rest of the component)
 
     return (
         <BaseContainer>
@@ -98,7 +94,7 @@ const Profile = () => {
                     />
                     <FormField
                         label="Id"
-                        value={userId}
+                        value={id}
                     />
                     <div className="login button-container" style={{display: 'flex', gap: '20px'}}>
                         <Button
@@ -118,9 +114,5 @@ const Profile = () => {
         </BaseContainer>
     );
 }
-
-/**
- * You can get access to the history object's properties via the useLocation, useNavigate, useParams, ... hooks.
- */
 
 export default Profile

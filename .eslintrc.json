@@ -21,12 +21,12 @@
         "eqeqeq": "error",
         "no-unreachable": "error",
         "no-duplicate-imports": "error",
-        "no-multiple-empty-lines": "warn",
-        "indent": ["warn", 2],
-        "quotes": ["warn", "double"],
-        "newline-before-return": "warn",
+        "no-multiple-empty-lines": "off",
+        "indent": ["off", 2],
+        "quotes": ["off", "double"],
+        "newline-before-return": "off",
         "padding-line-between-statements": [
-            "warn",
+            "off",
             { "blankLine": "always", "prev": "*", "next": "export" }
         ]
     },

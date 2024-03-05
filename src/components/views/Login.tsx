@@ -68,7 +68,7 @@ const Login = () => {
     const [users, setUsers] = useState<User[]>(null);
     const [name, setName] = useState<string>(null);
     const [username, setUsername] = useState<string>(null);
-    const [count, setCount] = useState<number>(null)
+    //const [count, setCount] = useState<number>(null)
     const [status, setStatus] = useState<string>("OFFLINE")
     const [birthday, setBirthday] = useState<string>("1.1.2014")
     const [entrydate, setEntrydate] = useState<string>("6.4.2002")
@@ -176,9 +176,9 @@ const Login = () => {
               >
                 Create New Account
               </Button>
-              <Button width="50%" onClick={() => setCount(count + 1)}>
+{/*              <Button width="50%" onClick={() => setCount(count + 1)}>
                 (Count: {count})
-              </Button>
+              </Button>*/}
             </div>
           </div>
         </div>

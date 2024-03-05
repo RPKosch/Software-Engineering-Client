@@ -34,8 +34,8 @@ const AppRouter = () => {
           <Route path="/register" element={<Register/>} />
         </Route>
 
-        <Route path="/profile/:userId" element={<GameGuard/>}>
-          <Route path="/profile/:userId" element={<Profile/>} />
+        <Route path="/profile/:profile_id" element={<GameGuard/>}>
+          <Route path="/profile/:profile_id" element={<Profile/>} />
         </Route>
 
         <Route path="/" element={

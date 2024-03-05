@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
-import {useNavigate, useParams} from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+import "styles/views/Profile.scss";
+import User from "models/User"
 
 const FormField = (props) => {
     return (
         <div className="login field">
             <label className="login label">{props.label}</label>
-            <div className="login input">
+            <label className="login labelprofiletext">
                 {props.value}
-            </div>
+            </label>
         </div>
     );
 };
@@ -24,33 +24,52 @@ FormField.propTypes = {
     onChange: PropTypes.func,
 };
 
+const EditField = (props) => {
+    return (
+        <div className="login field">
+            <label className="login label">{props.label}</label>
+            <input
+                className="login labelprofileedit"
+                placeholder="Undefined"
+                value={props.value}
+                onChange={(e) => props.onChange(e.target.value)}
+            />
+        </div>
+    );
+};
+
+EditField.propTypes = {
+    label: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+};
+
 const Profile = () => {
-    const [users, setUsers] = useState<User[]>(null);
-    const [name, setName] = useState<string>(null);
-    const [username, setUsername] = useState<string>(null);
-    const [count, setCount] = useState<number>(null)
-    const [status, setStatus] = useState<string>("OFFLINE")
-    const [birthday, setBirthday] = useState<string>("1.1.2014")
-    const [entrydate, setEntrydate] = useState<string>("6.4.2002")
-    const [id, setId] = useState<number>(1)
-    const navigate = useNavigate();
-    let { linkid } = useParams(); // Move useParams hook here
+    const navigate = useNavigate()
+    const [username, setUsername] = useState(null);
+    const [entrydate, setEntrydate] = useState(null)
+    const [birthday, setBirthday] = useState(null)
+    const [name, setName] = useState(null)
+    const [status, setStatus] = useState(null)
+    let { profile_id } = useParams();
+    const id = localStorage.getItem("id");
+    const [canuseredit, setCanUserEdit] = useState(null);
+    const [iseditbuttonon, setIsEditButtonOn] = useState(null);
 
     useEffect(() => {
-        const fetchDataprofile = async () => {
+        const fetchDataProfile = async () => {
             try {
-                console.log("CURRENT ID: ", linkid);
-                const token = localStorage.getItem("token");
-                const response = await api.get(`/users/${linkid}`, {headers: { Authorization: `Bearer ${token}` }});
+                const response = await api.get(`/users/${profile_id}`);
+                console.log("I BIIIIMMMMMMMS:", response.data)
+                // Get the returned user and update a new object.
                 const user = new User(response.data);
-                console.log("THIS IS THE RETURNED DATA: ", user);
+                setCanUserEdit(id === profile_id);
+                console.log("-------------------------------", canuseredit);
                 setUsername(user.username);
+                setEntrydate(user.entrydate);
+                setStatus(user.status);
                 setName(user.name);
-                //setStatus(user.status);
-                //setBirthday(user.get(birthday));
-                //setEntrydate(user.get(entrydate));
-                setId(user.id);
-
+                setBirthday(user.birthday)
             } catch (error) {
                 console.error(
                     `Something went wrong while fetching the users: \n${handleError(
@@ -63,45 +82,86 @@ const Profile = () => {
             }
         };
 
-        fetchDataprofile();
+        fetchDataProfile();
     }, []); // Add id as a dependency to useEffect
 
-    // ... (rest of the component)
+    const UpdateUser = async () => {
+        setIsEditButtonOn(false);
+        try {
+            const token = localStorage.getItem("token");
+            const requestBody = JSON.stringify({ name, username, birthday, entrydate, status, id});
+
+            // Use backticks for template literals to correctly interpolate self_id
+            const response = await api.put(`/users/${id}`, requestBody, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Handle the response, update UI, or perform any other actions as needed
+            console.log("User updated successfully:", response.data);
+        } catch (error) {
+            console.error(
+                `Something went wrong while updating the user: \n${handleError(error)}`
+            );
+            console.error("Details:", error);
+            alert("Something went wrong while updating the user! See the console for details.");
+        }
+    };
 
     return (
         <BaseContainer>
             <div className="profile container">
                 <div className="profile form">
+                    {canuseredit && iseditbuttonon ? (
+                        <EditField
+                            label="Username"
+                            value={username}
+                            onChange={(n) => setUsername(n)}
+                        />
+                    ) : (
+                        <FormField
+                            label="Username"
+                            value={username}
+                        />
+                    )}
+                    {canuseredit && iseditbuttonon ? (
+                        <EditField
+                            label="Birthday"
+                            value={birthday}
+                            onChange={(n) => setBirthday(n)}
+                        />
+                    ) : (
+                        <FormField
+                            label="Birthday"
+                            value={birthday || "Undefined"}
+                        />
+                    )}
                     <FormField
-                        label="Username"
-                        value={username}
-                    />
-                    <FormField
-                        label="Password"
-                        value={name}
-                    />
-                    <FormField
-                        label="Date"
-                        value={entrydate}
-                    />
-                    <FormField
-                        label="Birthday"
-                        value={birthday}
+                        label="Entrydate"
+                        value={entrydate || "Undefined"}
+
                     />
                     <FormField
                         label="Status"
                         value={status}
                     />
-                    <FormField
-                        label="Id"
-                        value={id}
-                    />
                     <div className="login button-container" style={{display: 'flex', gap: '20px'}}>
-                        <Button
-                            width="50%"
-                        >
-                            Login
-                        </Button>
+                        {iseditbuttonon ? (
+                            <Button
+                                width="50%"
+                                disabled={ id !== profile_id }
+                                onClick={() => UpdateUser()}
+                            >
+                                Save
+                            </Button>
+                        ) : (
+                            <Button
+                                width="50%"
+                                disabled={ id !== profile_id }
+                                onClick={() => setIsEditButtonOn(true)}
+                            >
+                                Edit
+                            </Button>
+                        )}
                         <Button
                             width="50%"
                             onClick={() => navigate("/game")}
@@ -115,4 +175,7 @@ const Profile = () => {
     );
 }
 
-export default Profile
+/**
+ * You can get access to the history object's properties via the useLocation, useNavigate, useParams, ... hooks.
+ */
+export default Profile;

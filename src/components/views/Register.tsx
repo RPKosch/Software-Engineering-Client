@@ -70,12 +70,13 @@ const Login = () => {
             // Store the token into the local storage.
             localStorage.setItem("token", user.token);
             localStorage.setItem("id", user.id);
+            localStorage.setItem("username", username)
 
             // Login successfully worked --> navigate to the route /game in the GameRouter
             navigate("/game");
         } catch (error) {
             alert(
-                `Something went wrong during the login: \n${handleError(error)}`
+                `Something went wrong during the register: \n${handleError(error)}`
             );
         }
     };

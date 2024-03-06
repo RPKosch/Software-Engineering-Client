@@ -30,7 +30,7 @@ const EditField = (props) => {
             <label className="login label">{props.label}</label>
             <input
                 className="login labelprofileedit"
-                placeholder="Undefined"
+//                placeholder="Undefined"
                 value={props.value}
                 onChange={(e) => props.onChange(e.target.value)}
             />
@@ -49,7 +49,6 @@ const Profile = () => {
     const [username, setUsername] = useState(null);
     const [entrydate, setEntrydate] = useState(null)
     const [birthday, setBirthday] = useState(null)
-    const [name, setName] = useState(null)
     const [status, setStatus] = useState(null)
     let { profile_id } = useParams();
     const id = localStorage.getItem("id");
@@ -64,21 +63,17 @@ const Profile = () => {
                 // Get the returned user and update a new object.
                 const user = new User(response.data);
                 setCanUserEdit(id === profile_id);
-                console.log("-------------------------------", canuseredit);
+                console.log("-------------------------------", user);
                 setUsername(user.username);
+                setBirthday(user.birthday);
                 setEntrydate(user.entrydate);
                 setStatus(user.status);
-                setName(user.name);
-                setBirthday(user.birthday)
             } catch (error) {
-                console.error(
+                alert(
                     `Something went wrong while fetching the users: \n${handleError(
                         error
                     )}`
                 );
-                console.error("Details:", error);
-                alert(
-                    "Something went wrong while fetching the users! See the console for details.");
             }
         };
 
@@ -89,21 +84,43 @@ const Profile = () => {
         setIsEditButtonOn(false);
         try {
             const token = localStorage.getItem("token");
-            const requestBody = JSON.stringify({ name, username, birthday, entrydate, status, id});
-
+            console.log("HUuUuuhhhhuhuhuhuhuh :::::::: Birthday:", birthday);
+            const requestBody = JSON.stringify({username, birthday, id});
             // Use backticks for template literals to correctly interpolate self_id
             const response = await api.put(`/users/${id}`, requestBody, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+            console.log("Thats response.data", response.data);
+            console.log("thats the response:", response);
+            console.log("----------------------");
+            console.log("TOKEN:", localStorage.getItem("token"));
+            if(response.status === 204){
+                localStorage.setItem("username", username);
+                console.log("THIS SHOULD WORK");
+            }
             // Handle the response, update UI, or perform any other actions as needed
             console.log("User updated successfully:", response.data);
         } catch (error) {
-            console.error(
+            console.log("---------------------birthday", localStorage.getItem("birthday"));
+            setBirthday(localStorage.getItem("birthday"));
+            setUsername(localStorage.getItem("username"));
+            alert(
                 `Something went wrong while updating the user: \n${handleError(error)}`
             );
-            console.error("Details:", error);
-            alert("Something went wrong while updating the user! See the console for details.");
+        }
+    };
+
+    const updateBirthday = async (n) => {
+        const parsedDate = new Date(n);
+        // Check if the parsed date is a valid date and it's not NaN
+        if (!isNaN(parsedDate.getTime())) {
+            localStorage.setItem("birthday", n);
+            setBirthday(n);
+        } else {
+            setBirthday(n);
+            if(birthday === ""){
+                setBirthday(null);
+            }
         }
     };
 
@@ -127,17 +144,17 @@ const Profile = () => {
                         <EditField
                             label="Birthday"
                             value={birthday}
-                            onChange={(n) => setBirthday(n)}
+                            onChange={(n) => updateBirthday(n)}
                         />
                     ) : (
                         <FormField
                             label="Birthday"
-                            value={birthday || "Undefined"}
+                            value={birthday}
                         />
                     )}
                     <FormField
                         label="Entrydate"
-                        value={entrydate || "Undefined"}
+                        value={entrydate}
 
                     />
                     <FormField

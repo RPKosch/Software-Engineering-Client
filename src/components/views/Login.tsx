@@ -129,14 +129,11 @@ const Login = () => {
           }
 
         } catch (error) {
-          console.error(
-              `Something went wrong while fetching the users: \n${handleError(
+          alert(
+              `Something went wrong during login: \n${handleError(
                   error
               )}`
           );
-          console.error("Details:", error);
-          alert(
-              "Something went wrong while fetching the users! See the console for details.");
         }
     };
 

@@ -67,6 +67,8 @@ const Game = () => {
               console.log("ELLLLSEEEEE");
           }
       } catch (error) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("id");
           navigate("/login")
           console.error("Error during logout:", error);
       }
@@ -111,14 +113,10 @@ const Game = () => {
         // See here to get more data.
         console.log(response);
       } catch (error) {
-        console.error(
+        alert(
             `Something went wrong while fetching the users: \n${handleError(
                 error
             )}`
-        );
-        console.error("Details:", error);
-        alert(
-            "Something went wrong while fetching the users! See the console for details."
         );
       }
     }

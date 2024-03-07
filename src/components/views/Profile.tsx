@@ -58,12 +58,14 @@ const Profile = () => {
     useEffect(() => {
         const fetchDataProfile = async () => {
             try {
+                console.log("----------------------------------")
+                console.log("PROFILE ID:", profile_id);
                 const response = await api.get(`/users/${profile_id}`);
                 console.log("I BIIIIMMMMMMMS:", response.data)
                 // Get the returned user and update a new object.
                 const user = new User(response.data);
                 setCanUserEdit(id === profile_id);
-                console.log("-------------------------------", user);
+                console.log("-------------------------------", response);
                 setUsername(user.username);
                 setBirthday(user.birthday);
                 setEntrydate(user.entrydate);
@@ -87,6 +89,7 @@ const Profile = () => {
             console.log("HUuUuuhhhhuhuhuhuhuh :::::::: Birthday:", birthday);
             const requestBody = JSON.stringify({username, birthday, id});
             // Use backticks for template literals to correctly interpolate self_id
+            console.log("Request Body: ", requestBody);
             const response = await api.put(`/users/${id}`, requestBody, {
                 headers: { Authorization: `Bearer ${token}` }
             });

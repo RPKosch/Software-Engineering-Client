@@ -36,8 +36,6 @@ jobs:
           node-version: "20.x"
       - run: npm install
       - run: npm run build
-      - run: gcloud auth login
-      - run: 4/0AeaYSHBQc2BmLX7VqHbgbOVuK9npTRPKfTgz9eCf0THIRYDZsp7gr-gFAghH4VSUxLyqHg
 
       - name: Deploy to App Engine
         id: deploy

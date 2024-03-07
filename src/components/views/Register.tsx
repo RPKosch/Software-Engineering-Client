@@ -70,6 +70,7 @@ const Login = () => {
 
             const user = new User(response.data);
             console.log("------------------------------");
+            console.log("request to Register:", response.request.responseURL);
             console.log("Created User: ", response.data);
             console.log("THIS Response:", response)
             console.log("TOKEN in FIle:", response.headers.authorization);

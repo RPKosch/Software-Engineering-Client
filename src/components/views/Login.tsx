@@ -104,7 +104,7 @@ const Login = () => {
 
           // This is just some data for you to see what is available.
           // Feel free to remove it.
-          console.log("request to:", response.request.responseURL);
+          console.log("request to LOGIN:", response.request.responseURL);
           console.log("status code:", response.status);
           console.log("status text:", response.statusText);
           console.log("requested data:", response.data);

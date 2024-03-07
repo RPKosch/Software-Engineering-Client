@@ -70,6 +70,7 @@ const Game = () => {
         // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
         async function fetchData() {
             try {
+                //localStorage.removeItem("token");
                 const token = localStorage.getItem("token");
                 if (!token) {
                     navigate("/login");
@@ -114,16 +115,15 @@ const Game = () => {
     }, []);
 
     let content = <Spinner/>;
-
-    let content1;
-
-    if (Array.isArray(users)) {
-        content1 = (
+    if (users) {
+        content = (
             <div className="game">
                 <ul className="game user-list">
                     {users.map((user: User) => (
-                        <li key={user.id} onClick={() => navigate("/profile/" + user.id)}>
-                            <Player user={user}/>
+                        <li key={user.id} onClick={() => navigate("/profile/"+ user.id)}>
+                            <Player user={user}
+                            />
+
                         </li>
                     ))}
                 </ul>
@@ -132,9 +132,6 @@ const Game = () => {
                 </Button>
             </div>
         );
-    } else {
-        // Handle the case when users is not an array (e.g., set content to a loading state or an error message)
-        content1 = <p>Error: Users data is not in the expected format.</p>;
     }
 
     return (
@@ -146,6 +143,7 @@ const Game = () => {
             {content}
         </BaseContainer>
     );
-}
+};
+
 export default Game;
 

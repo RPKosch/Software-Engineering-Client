@@ -36,17 +36,6 @@ const Game = () => {
   const [users, setUsers] = useState<User[]>(null);
 
   const logout = async () => {
-      /*/
-      const id = localStorage.getItem("id")
-      const response = api.get("/users/{id}");
-      const requestBody = JSON.stringify(response.data());
-      const logoutchange = api.put("/users/{id}");
-
-      // delays continuous execution of an async operation for 1 second.
-      // This is just a fake async call, so that the spinner can be displayed
-      // feel free to remove it :)
-      response.data()
-      /*/
       try {
           const token = localStorage.getItem("token");
           if (!token) {
@@ -54,7 +43,6 @@ const Game = () => {
               return;
           }
           const id = localStorage.getItem("id");
-          // Assuming you are making a POST request to /userslogout/${id}
           const response = await api.post(`/userslogout/${id}`, {headers: { Authorization: `Bearer ${token}` }});
 
           // Check if the logout was successful based on the response status
@@ -81,13 +69,8 @@ const Game = () => {
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
-        //localStorage.removeItem("token");
-
-
       try {
         const token = localStorage.getItem("token");
-
-
         if (!token) {
             navigate("/login");
             return;
@@ -98,6 +81,10 @@ const Game = () => {
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        if(response.data === ""){
+            localStorage.removeItem("token");
+            navigate("/login");
+        }
 
         // Get the returned users and update the state.
         setUsers(response.data);
@@ -118,6 +105,8 @@ const Game = () => {
                 error
             )}`
         );
+        localStorage.removeItem("token");
+        navigate("/login");
       }
     }
 

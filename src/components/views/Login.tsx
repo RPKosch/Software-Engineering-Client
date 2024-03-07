@@ -82,26 +82,17 @@ const Login = () => {
 //      async function fetchData() {
     const fetchData = async () => {
         try {
-            /*/
-          const token = localStorage.getItem("token");
-          const userId = localStorage.getItem("id");
-          console.log("Token: ", {token})
 
-             */
           const requestBody = JSON.stringify({ username, name});
-          console.log("huhuhhuhhuuhhuh", requestBody);
           const response = await api.post('/users/login', requestBody);
 
-          // delays continuous execution of an async operation for 1 second.
-          // This is just a fake async call, so that the spinner can be displayed
-          // feel free to remove it :)
           const user = new User(response.data);
           console.log("THIS IS THE RETURNED DATA: ", user);
-
 
           if(!response.data) {
               console.log("This USER ISSS EEEMPPPTYYYYY");
           }else {
+              // Get the returned users and update the state.
               console.log("Lets goooo. User login successful!!!");
               localStorage.setItem("token", user.token);
               localStorage.setItem("id", user.id);
@@ -110,8 +101,6 @@ const Login = () => {
               navigate("/game");
           }
 
-          // Get the returned users and update the state.
-          //setUsers(response.data);
 
           // This is just some data for you to see what is available.
           // Feel free to remove it.
@@ -119,14 +108,6 @@ const Login = () => {
           console.log("status code:", response.status);
           console.log("status text:", response.statusText);
           console.log("requested data:", response.data);
-
-          // See here to get more data.
-          console.log("Response:    ", response);
-          if (response.name !== name || response.username !== username){
-            console.log("ERROR_SELF Password or Username is Incorrect!");
-          } else {
-              navigate("logindumacher");
-          }
 
         } catch (error) {
           alert(

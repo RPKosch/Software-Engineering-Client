@@ -64,14 +64,23 @@ const Login = () => {
             const requestBody = JSON.stringify({ name, username });
             const response = await api.post("/users", requestBody);
 
-            // Get the returned user and update a new object.
+            // I wanted to use a header for the Token but it does not work
+            // and I do not understand why.
+            // Therefore Token implementation with body
+
             const user = new User(response.data);
+            console.log("------------------------------");
+            console.log("Created User: ", response.data);
+            console.log("THIS Response:", response)
+            console.log("TOKEN in FIle:", response.headers.authorization);
             const token = response.headers["authorization"];
-            // Store the token into the local storage.
+            console.log("Token: ", token);
+            console.log("------------------------------");
+
+            // Store the id, token and username local. username for changing it to last valid value
             localStorage.setItem("token", token);
             localStorage.setItem("id", user.id);
             localStorage.setItem("username", username)
-            console.log("Token: ", token);
 
             // Login successfully worked --> navigate to the route /game in the GameRouter
             navigate("/game");

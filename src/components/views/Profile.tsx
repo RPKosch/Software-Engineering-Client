@@ -91,7 +91,7 @@ const Profile = () => {
             // Use backticks for template literals to correctly interpolate self_id
             console.log("Request Body: ", requestBody);
             const response = await api.put(`/users/${id}`, requestBody, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {authorization: token}
             });
             console.log("Thats response.data", response.data);
             console.log("thats the response:", response);
